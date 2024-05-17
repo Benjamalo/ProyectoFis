@@ -12,11 +12,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const formLogin = document.querySelector("#pantallaLogin");
   formLogin.addEventListener("submit", function (event) {
+    event.preventDefault()
+
     const email = document.getElementById("inputEmail").value;
     const clave = document.getElementById("inputClave").value;
     if (comprueboRegistrado(email, clave)) {
       // Previene el envío del formulario
-      event.preventDefault();
+
       mostrarNavbar(navbar);
       mostrarSeccion("pantallaInicio");
       console.log(`El usuario ${email} está registrado`);
@@ -78,13 +80,13 @@ function mostrarSeccion(seccionId) {
   var secciones = document.querySelectorAll(
     "#pantallaInicio, #pantallaMisReservas, #pantallaLogin, #pantallaRegistro"
   );
-  if (seccionId != "pantallaLogin") {
-    document.getElementById("pantallaLogin").classList.remove("cardLogin");
-  }
   if (seccionId == "pantallaRegistro") {
     document.getElementById("pantallaRegistro").classList.add("card");
   } else {
     document.getElementById("pantallaRegistro").classList.remove("card");
+  }
+  if (seccionId != "pantallaLogin") {
+    document.getElementById("pantallaLogin").classList.remove("cardLogin");
   }
   secciones.forEach(function (seccion) {
     seccion.classList.add("hidden");
@@ -116,7 +118,8 @@ enlaces.forEach(function (enlace) {
 
 const formularioRegistro = document.querySelector("#pantallaRegistro");
 
-formularioRegistro.addEventListener("submit", function () {
+formularioRegistro.addEventListener("submit", function (event) {
+  event.preventDefault()
   const navbar = document.getElementById("navBar");
   const nombre = document.getElementById("registroNombre").value;
   const apellido = document.getElementById("registroApellido").value;
