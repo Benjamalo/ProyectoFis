@@ -12,19 +12,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const formLogin = document.querySelector("#pantallaLogin");
   formLogin.addEventListener("submit", function (event) {
-    const email = document.getElementById('inputEmail').value
-    // Previene el envío del formulario
-    if(comprueboRegistrado(email)){
+    const email = document.getElementById("inputEmail").value;
+    const clave = document.getElementById("inputClave").value;
+    if (comprueboRegistrado(email, clave)) {
+      // Previene el envío del formulario
       event.preventDefault();
       mostrarNavbar(navbar);
       mostrarSeccion("pantallaInicio");
-    };
+      console.log(`El usuario ${email} está registrado`);
+    } else {
+      console.log(`El usuario ${email} NO está registrado`);
+    }
   });
 });
 
-function comprueboRegistrado(email) {
-  if(email){
+function comprueboRegistrado(email, clave) {
+  if (email && clave) {
+    const listaUsers = sistema.obtenerListaUsuarios();
+    const existe = listaUsers.filter(
+      (e) => e.correoElectronico == email && e.clave == clave
+    );
 
+    if (existe.length) {
+      return true;
+    }
   }
 }
 
@@ -33,11 +44,16 @@ function mostrarNavbar(navbar) {
   navbar.classList.remove("hidden");
 }
 
+const ulHTML = document.getElementById("listaAlumnos");
 const listaAlumnos = sistema.obtenerListaAlunos();
-console.log(listaAlumnos);
+listaAlumnos.forEach((al) => {
+  const li = document.createElement("li");
+  li.innerHTML = `<p>${al.nombre + " " + al.apellido}</p>`;
+  ulHTML.appendChild(li);
+});
+
 const listaUsuarios = sistema.obtenerListaUsuarios();
 const ulUsuarios = document.getElementById("listaUsuarios");
-const ulHTML = document.getElementById("listaAlumnos");
 listaUsuarios.forEach((us) => {
   const li = document.createElement("li");
   li.innerHTML = `<p>${us.nombre + " " + us.apellido + " " + us.cedula}</p>
@@ -47,6 +63,7 @@ listaUsuarios.forEach((us) => {
     `;
   ulUsuarios.appendChild(li);
 });
+
 const botonAgregar = document.getElementById("botonAgregar");
 botonAgregar.addEventListener("click", () => {
   let nombreAlumno = document.getElementById("inputAlumno").value;
@@ -55,13 +72,6 @@ botonAgregar.addEventListener("click", () => {
   ulHTML.appendChild(li);
   sistema.agregarAlumno(nombreAlumno);
   document.getElementById("inputAlumno").value = "";
-  console.log(sistema.obtenerListaAlunos());
-});
-
-listaAlumnos.forEach((al) => {
-  const li = document.createElement("li");
-  li.innerHTML = `<p>${al.nombre + " " + al.apellido}</p>`;
-  ulHTML.appendChild(li);
 });
 
 function mostrarSeccion(seccionId) {
@@ -86,6 +96,7 @@ function mostrarSeccion(seccionId) {
 var logo = document.getElementById("logo");
 logo.addEventListener("click", function () {
   mostrarSeccion("pantallaInicio");
+  console.log(sistema.obtenerListaUsuarios())
 });
 
 var registro = document.getElementById("botonPantallaRegistro");
@@ -107,6 +118,19 @@ const formularioRegistro = document.querySelector("#pantallaRegistro");
 
 formularioRegistro.addEventListener("submit", function () {
   const navbar = document.getElementById("navBar");
+  const nombre = document.getElementById("registroNombre").value;
+  const apellido = document.getElementById("registroApellido").value;
+  const cedula = document.getElementById("registroCedula").value;
+  const email = document.getElementById("registroEmail").value;
+  const clave = document.getElementById("registroClave").value;
+  const foto = document.getElementById("registroFoto").files[0];
+  console.log(clave);
+  const existeUser = sistema
+    .obtenerListaUsuarios()
+    .filter((e) => e.correoElectronico == email);
+  console.log(existeUser);
+  existeUser;
+  sistema.agregarUsuario(nombre, apellido, cedula, email, clave, foto);
 
   mostrarNavbar(navbar);
   mostrarSeccion("pantallaInicio");
